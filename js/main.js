@@ -54,19 +54,24 @@ function updateBackgroundColor(sectionId) {
     
     switch(sectionId) {
         case 'home':
-            body.style.backgroundColor = '#ffffff';
+            body.style.backgroundColor = '#f8f9fa';
+            document.documentElement.style.setProperty('--primary-color', '#2c3e50');
             break;
         case 'menu':
-            body.style.backgroundColor = '#ecf0f1';
+            body.style.backgroundColor = '#e9ecef';
+            document.documentElement.style.setProperty('--primary-color', '#34495e');
             break;
         case 'about':
-            body.style.backgroundColor = '#ffffff';
+            body.style.backgroundColor = '#f1f8ff';
+            document.documentElement.style.setProperty('--primary-color', '#2980b9');
             break;
         case 'contact':
-            body.style.backgroundColor = '#ecf0f1';
+            body.style.backgroundColor = '#fff5f5';
+            document.documentElement.style.setProperty('--primary-color', '#c0392b');
             break;
         default:
             body.style.backgroundColor = '#ffffff';
+            document.documentElement.style.setProperty('--primary-color', '#2c3e50');
     }
 }
 
