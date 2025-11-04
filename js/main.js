@@ -66,13 +66,13 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // Update background color based on section
-// Array of colors to cycle through
+// Array of palettes including background color and an optional background image
 const colorPalettes = [
-    { bg: '#f0f7ff', primary: '#3498db' }, // Blue theme
-    { bg: '#fff0f0', primary: '#e74c3c' }, // Red theme
-    { bg: '#f0fff0', primary: '#2ecc71' }, // Green theme
-    { bg: '#fff7f0', primary: '#e67e22' }, // Orange theme
-    { bg: '#f5f0ff', primary: '#9b59b6' }  // Purple theme
+    { bg: '#f0f7ff', primary: '#3498db', image: 'https://images.unsplash.com/photo-1541542684-5a7aa7d6ab4d?auto=format&fit=crop&w=1600&q=80' }, // Blue theme
+    { bg: '#fff0f0', primary: '#e74c3c', image: 'https://images.unsplash.com/photo-1547592180-2a7f8f8d1b21?auto=format&fit=crop&w=1600&q=80' }, // Red theme
+    { bg: '#f0fff0', primary: '#2ecc71', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=80' }, // Green theme
+    { bg: '#fff7f0', primary: '#e67e22', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=80' }, // Orange theme (fallback image)
+    { bg: '#f5f0ff', primary: '#9b59b6', image: 'https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=1600&q=80' }  // Purple theme
 ];
 
 function updateBackgroundColor(sectionId) {
@@ -118,6 +118,33 @@ function updateBackgroundColor(sectionId) {
     
     body.style.backgroundColor = bgColor;
     document.documentElement.style.setProperty('--primary-color', primaryColor);
+
+    // Also update background image with a smooth crossfade between two overlay layers
+    try {
+        const layer1 = document.getElementById('bg-layer-1');
+        const layer2 = document.getElementById('bg-layer-2');
+        if (layer1 && layer2) {
+            // Determine which palette to show (prefer currentPalette image)
+            const targetImage = progressBetweenColors < 0.5 ? currentPalette.image : nextPalette.image;
+            // Pick the currently invisible layer to update
+            const activeLayer = layer1.classList.contains('active') ? layer1 : layer2;
+            const inactiveLayer = activeLayer === layer1 ? layer2 : layer1;
+
+            // If the inactive layer already shows the desired image, just crossfade
+            const currentBg = inactiveLayer.style.backgroundImage || '';
+            const desiredBg = targetImage ? `url("${targetImage}")` : '';
+
+            if (currentBg !== desiredBg) {
+                inactiveLayer.style.backgroundImage = desiredBg;
+            }
+
+            // crossfade: make inactive layer active
+            inactiveLayer.classList.add('active');
+            activeLayer.classList.remove('active');
+        }
+    } catch (e) {
+        // ignore in case elements are not present
+    }
 }
 
 // Add hover effect to menu items
