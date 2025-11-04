@@ -51,6 +51,11 @@ body {
     background: linear-gradient(rgba(0,0,0,0.12), rgba(0,0,0,0.12));
 }
 
+/* If images are disabled via JS, hide the bg layers entirely to avoid coverage issues */
+.no-bg-images .bg-layer {
+    display: none !important;
+}
+
 /* Navbar Styles */
 .navbar {
     position: fixed;

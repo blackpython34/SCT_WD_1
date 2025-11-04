@@ -66,6 +66,9 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // Update background color based on section
+// Toggle: set to `true` to use crossfading background images, `false` to use only color changes
+const useBackgroundImages = false;
+
 // Array of palettes including background color and an optional background image
 const colorPalettes = [
     { bg: '#f0f7ff', primary: '#3498db', image: 'https://images.unsplash.com/photo-1541542684-5a7aa7d6ab4d?auto=format&fit=crop&w=1600&q=80' }, // Blue theme
@@ -82,14 +85,15 @@ function updateBackgroundColor(sectionId) {
     const documentHeight = document.documentElement.scrollHeight - windowHeight;
     
     // Calculate progress (0 to 1) based on scroll position
-    const scrollProgress = Math.min(scrollPosition / documentHeight, 1);
-    
-    // Calculate which color palette to use based on scroll progress
-    const paletteIndex = Math.floor(scrollProgress * colorPalettes.length);
-    const nextPaletteIndex = (paletteIndex + 1) % colorPalettes.length;
-    
-    // Calculate progress between current and next color
-    const progressBetweenColors = (scrollProgress * colorPalettes.length) % 1;
+    const scrollProgress = documentHeight > 0 ? Math.min(scrollPosition / documentHeight, 1) : 0;
+
+    // To avoid wrapping, interpolate between adjacent palettes across the document.
+    // We treat the palettes as stops: palette[0] at scroll 0, palette[last] at scroll 1.
+    const segmentCount = Math.max(colorPalettes.length - 1, 1);
+    const position = scrollProgress * segmentCount; // ranges 0..segmentCount
+    const paletteIndex = Math.min(Math.floor(position), segmentCount - 1);
+    const nextPaletteIndex = Math.min(paletteIndex + 1, segmentCount);
+    const progressBetweenColors = Math.min(Math.max(position - paletteIndex, 0), 1);
     
     // Interpolate between current and next color
     const currentPalette = colorPalettes[paletteIndex];
@@ -119,7 +123,14 @@ function updateBackgroundColor(sectionId) {
     body.style.backgroundColor = bgColor;
     document.documentElement.style.setProperty('--primary-color', primaryColor);
 
-    // Also update background image with a smooth crossfade between two overlay layers
+    // If images are disabled, hide background layers (CSS rule will apply) and stop here
+    if (!useBackgroundImages) {
+        const bodyEl = document.body;
+        if (!bodyEl.classList.contains('no-bg-images')) bodyEl.classList.add('no-bg-images');
+        return;
+    }
+
+    // Update background image with a smooth crossfade between two overlay layers
     try {
         const layer1 = document.getElementById('bg-layer-1');
         const layer2 = document.getElementById('bg-layer-2');
