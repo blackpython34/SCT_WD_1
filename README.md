@@ -64,8 +64,4 @@ Next steps (optional)
 - Add a contact form (server or form provider) for reservations.
 - Add light/dark mode toggle or a control to disable background images for low-data users.
 
-If you'd like, I can:
-- Replace remote Unsplash images with local sample images inside `images/` and update the code.
-- Add a README badge with the live GitHub Pages URL once deployed.
-
 Enjoy — open `index.html` and scroll to see the automatic color and background transitions in action!
